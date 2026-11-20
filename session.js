@@ -1,4 +1,4 @@
-const GAME_VERSION = '14.1.0-rc.2';
+const GAME_VERSION = '14.1.0';
 const SAVE_KEY = 'oneIn46B_session';
 const SAVE_VERSION = 1;
 const ORGAN_KEYS = ['jaws', 'armor', 'lungs', 'senses', 'locomotion', 'crest'];
@@ -173,9 +173,10 @@ function updateSaveLobby() {
   const download = document.getElementById('exportSaveBtn');
   const life = state.activeLife;
   const canResume = life && state.sessionPhase !== 'idle' && saveIssue !== 'conflict';
-  card.classList.toggle('hidden', !saveIssue && !canResume);
+  const canExport = savedRaw !== null;
+  card.classList.toggle('hidden', !saveIssue && !canResume && !canExport);
   resume.classList.toggle('hidden', !canResume);
-  download.classList.toggle('hidden', savedRaw === null);
+  download.classList.toggle('hidden', !canExport);
   resume.textContent = state.sessionPhase === 'ending'
     ? toText('查看上一世结局', 'View the last ending')
     : toText('继续当前生命', 'Continue life');
@@ -189,7 +190,7 @@ function updateSaveLobby() {
   message.textContent = alerts[saveIssue] || (life
     ? toText(`${life.species.name} · 第 ${life.generation} 世 · 阶段 ${life.currentTick}/${life.totalTicks}`,
       `${speciesName(life.species)} · Generation ${life.generation} · Stage ${life.currentTick}/${life.totalTicks}`)
-    : '');
+    : canExport ? toText('账户进度已保存。', 'Account progress saved.') : '');
 }
 
 function allowNewLife() {

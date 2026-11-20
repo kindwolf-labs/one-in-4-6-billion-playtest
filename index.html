@@ -4,7 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>46亿分之一 · 1 in 4.6 Billion</title>
-  <link rel="stylesheet" href="game.css">
+  <meta name="description" content="从古生物演化或虚构的现代家庭开始，经历选择、成长与传承。 A bilingual browser game about evolution, life choices, and what survives into the next generation.">
+  <meta property="og:title" content="46亿分之一 · 1 in 4.6 Billion">
+  <meta property="og:description" content="从古生物或现代人生开始。 Begin as a prehistoric creature or in a fictional modern household.">
+  <link rel="stylesheet" href="game.css?v=656900075b112f62">
+  <script defer src="session.js?v=3d7dcbe60caea6fc"></script>
+  <script defer src="english.js?v=968b1833a4850884"></script>
+  <script defer src="english-story.js?v=18efeea42a6609f4"></script>
+  <script defer src="localization.js?v=2d5d6629d462eec2"></script>
+  <script defer src="ecology.js?v=0fc8ba9fe31ceb2c"></script>
+  <script defer src="game.js?v=16689bac17e07437"></script>
 
 </head>
 <body class="min-h-screen flex flex-col selection:bg-emerald-500/30 selection:text-emerald-200">
@@ -115,7 +124,7 @@
 <h3 class="serif-title text-xl font-bold text-white">古生物演化</h3>
                 <p class="text-sm text-slate-300 leading-relaxed">从白垩纪的君王暴龙开始。捕食、应对天敌，并让新的器官随你的抉择长出来。其他物种可在图鉴选择。</p>
               </div>
-              <button type="button" id="heroStartModeDinoBtn" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 hover:from-emerald-400 hover:to-cyan-300 text-slate-950 font-extrabold text-sm shadow-xl transition">
+              <button type="button" id="heroStartModeDinoBtn" disabled class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 hover:from-emerald-400 hover:to-cyan-300 text-slate-950 font-extrabold text-sm shadow-xl transition disabled:opacity-60 disabled:cursor-wait">
                 开始演化 →
               </button>
             </div>
@@ -126,7 +135,7 @@
 <h3 class="serif-title text-xl font-bold text-white">现代人生</h3>
                 <p class="text-sm text-slate-300 leading-relaxed">从五种家庭处境中选择自己的起点，经历求学、离家、工作和团聚。关系与健康会随你的选择改变。</p>
               </div>
-              <button type="button" id="heroStartModeHumanBtn" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-400 hover:from-amber-400 hover:to-orange-300 text-slate-950 font-extrabold text-sm shadow-xl transition">
+              <button type="button" id="heroStartModeHumanBtn" disabled class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-400 hover:from-amber-400 hover:to-orange-300 text-slate-950 font-extrabold text-sm shadow-xl transition disabled:opacity-60 disabled:cursor-wait">
                 选择出生家庭 →
               </button>
             </div>
@@ -142,7 +151,7 @@
             </span>
             
           </div>
-          <canvas id="lobbyHeroShowcaseCanvas" width="920" height="150" class="w-full h-28 sm:h-36 rounded-xl bg-slate-950 block"></canvas>
+          <canvas id="lobbyHeroShowcaseCanvas" width="920" height="150" class="w-full h-52 sm:h-36 rounded-xl bg-slate-950 block"></canvas>
         </div>
 
         <!-- Collapsible Advanced Setup & Past Lives Drawer (Hidden by default so Title Screen is 100% Pure Game!) -->
@@ -1379,16 +1388,10 @@
 
   <!-- Footer -->
   <footer class="border-t border-slate-900 bg-abyss-950 py-4 px-4 text-center text-[11px] text-slate-500 mt-8">
-    <span>46亿分之一 · 1 in 4.6 Billion · 14.1.0-rc.2</span>
+    <span data-user-text>46亿分之一 · 1 in 4.6 Billion · 14.1.0</span>
   </footer>
 
 
 
-  <script src="session.js"></script>
-  <script src="english.js"></script>
-  <script src="english-story.js"></script>
-  <script src="localization.js"></script>
-  <script src="ecology.js"></script>
-  <script src="game.js"></script>
 </body>
 </html>

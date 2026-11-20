@@ -7664,6 +7664,8 @@ function initApp() {
   renderPastLivesLobby();
   renderEndingsGallery();
   updateSaveLobby();
+  document.getElementById('heroStartModeDinoBtn').disabled = false;
+  document.getElementById('heroStartModeHumanBtn').disabled = false;
 }
 
 // ==================== 22. v9.0 GLOBAL I18N ENGINE (AUTO BROWSER LANGUAGE DETECTION + ZH/EN/JA/ES) ====================
@@ -9684,16 +9686,25 @@ function startLobbyShowcaseCanvasLoop() {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const showcaseSpecies = [
-    { sp: SPECIES_DB.find(s => s.id === 'archaea') || SPECIES_DB[0], label: '38亿年前 · 深海古菌', scale: 0.65, col: '#34d399', organs: { jaws: 0, armor: 0, lungs: 0, senses: 1, locomotion: 0, crest: 0 } },
-    { sp: SPECIES_DB.find(s => s.id === 'anomalocaris') || SPECIES_DB[0], label: '5.1亿年前 · 寒武纪奇虾', scale: 0.82, col: '#22d3ee', organs: { jaws: 2, armor: 1, lungs: 1, senses: 2, locomotion: 1, crest: 1 } },
-    { sp: SPECIES_DB.find(s => s.id === 'tiktaalik') || SPECIES_DB[0], label: '3.7亿年前 · 提塔利克鱼登陆', scale: 0.90, col: '#a855f7', organs: { jaws: 2, armor: 2, lungs: 2, senses: 2, locomotion: 2, crest: 1 } },
-    { sp: SPECIES_DB.find(s => s.id === 'trex') || SPECIES_DB[0], label: '6600万年前 · 君王暴龙', scale: 1.05, col: '#f43f5e', organs: { jaws: 3, armor: 3, lungs: 2, senses: 3, locomotion: 2, crest: 2 } },
-    { sp: SPECIES_DB.find(s => s.id === 'modern_human') || SPECIES_DB[0], label: '公元2026年 · 现代人生', scale: 1.05, col: '#fbbf24', organs: { jaws: 3, armor: 3, lungs: 3, senses: 3, locomotion: 3, crest: 3 } }
+    { id: 'archaea', name: ['深海古菌', 'Archaea'], time: ['38亿年前', '3.8 billion years ago'], scale: 0.65, col: '#34d399', organs: { jaws: 0, armor: 0, lungs: 0, senses: 1, locomotion: 0, crest: 0 } },
+    { id: 'anomalocaris', name: ['奇虾', 'Anomalocaris'], time: ['5.1亿年前', '510 million years ago'], scale: 0.82, col: '#22d3ee', organs: { jaws: 2, armor: 1, lungs: 1, senses: 2, locomotion: 1, crest: 1 } },
+    { id: 'tiktaalik', name: ['提塔利克鱼', 'Tiktaalik'], time: ['3.75亿年前', '375 million years ago'], scale: 0.90, col: '#a855f7', organs: { jaws: 2, armor: 2, lungs: 2, senses: 2, locomotion: 2, crest: 1 } },
+    { id: 'trex', name: ['君王暴龙', 'Tyrannosaurus'], time: ['6600万年前', '66 million years ago'], scale: 1.05, col: '#f43f5e', organs: { jaws: 3, armor: 3, lungs: 2, senses: 3, locomotion: 2, crest: 2 } },
+    { id: 'modern_human', name: ['现代人生', 'Modern life'], time: ['公元2026年', '2026 CE'], scale: 1.05, col: '#fbbf24', organs: { jaws: 3, armor: 3, lungs: 3, senses: 3, locomotion: 3, crest: 3 } }
   ];
+  for (const item of showcaseSpecies) item.sp = SPECIES_DB.find(species => species.id === item.id);
 
   function renderLobbyCanvas(ts) {
-    if (state.currentView === 'sim' && state.simSubview === 'lobby') {
+    if (!document.hidden && state.currentView === 'sim' && state.simSubview === 'lobby') {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      if (width && height && (canvas.width !== width || canvas.height !== height)) {
+        canvas.width = width;
+        canvas.height = height;
+      }
       const w = canvas.width, h = canvas.height;
+      const narrow = w < 570;
+      const rowHeight = narrow ? h / 2 : h;
       const t = ts * 0.001;
       const bg = ctx.createLinearGradient(0, 0, w, 0);
       bg.addColorStop(0, '#02101f');
@@ -9708,32 +9719,45 @@ function startLobbyShowcaseCanvasLoop() {
       ctx.setLineDash([8, 6]);
       ctx.lineDashOffset = -ts * 0.03;
       ctx.beginPath();
-      ctx.moveTo(60, h * 0.52);
-      ctx.lineTo(w - 60, h * 0.52);
+      ctx.moveTo(w * 0.08, rowHeight * 0.45);
+      ctx.lineTo(w * 0.92, rowHeight * 0.45);
+      if (narrow) {
+        ctx.moveTo(w * 0.2, rowHeight * 1.45);
+        ctx.lineTo(w * 0.8, rowHeight * 1.45);
+      }
       ctx.stroke();
       ctx.setLineDash([]);
 
       showcaseSpecies.forEach((item, idx) => {
-        const cx = 98 + idx * 182;
-        const cy = h * 0.48 + Math.sin(t * 2.2 + idx) * 5;
+        const secondRow = narrow && idx >= 3;
+        const row = secondRow ? 1 : 0;
+        const count = narrow ? (secondRow ? 2 : 3) : showcaseSpecies.length;
+        const column = secondRow ? idx - 3 : idx;
+        const cellWidth = w / count;
+        const cx = (column + 0.5) * cellWidth;
+        const cy = rowHeight * (row + 0.42) + Math.sin(t * 2.2 + idx) * 3;
 
         // Spotlight halo
         ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
         ctx.beginPath();
-        ctx.arc(cx, cy, 44, 0, Math.PI * 2);
+        ctx.arc(cx, cy, narrow ? 29 : 42, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.save();
         ctx.translate(cx, cy);
         if (item.sp) {
-          drawArticulatedCreature(ctx, item.sp, item.organs, item.scale * 0.65, item.col, t + idx * 0.7, true, false);
+          drawArticulatedCreature(ctx, item.sp, item.organs, item.scale * (narrow ? 0.47 : 0.65), item.col, t + idx * 0.7, true, false);
         }
         ctx.restore();
 
         ctx.fillStyle = '#fde68a';
-        ctx.font = 'bold 10.5px Inter, sans-serif';
+        ctx.font = 'bold 12px system-ui, sans-serif';
         ctx.textAlign = 'center';
-      ctx.fillText(translateText(item.label), cx, h - 14, 168);
+        const bottom = (row + 1) * rowHeight;
+        ctx.fillText(toText(...item.name), cx, bottom - 22, cellWidth - 8);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '11px system-ui, sans-serif';
+        ctx.fillText(toText(...item.time), cx, bottom - 8, cellWidth - 8);
       });
     }
     requestAnimationFrame(renderLobbyCanvas);
