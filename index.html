@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>46亿分之一 · 1 in 4.6 Billion</title>
+  <link rel="stylesheet" href="game.css">
+
+</head>
+<body class="min-h-screen flex flex-col selection:bg-emerald-500/30 selection:text-emerald-200">
+
+  <!-- Top Live Pulse Bar -->
+  <header class="game-header z-40 bg-abyss-950/92 backdrop-blur-md border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-3">
+        <button id="brandHomeBtn" class="flex items-center gap-2.5 text-left group focus:outline-none">
+          <div id="brandMark" data-user-text class="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-emerald-500/30 via-teal-500/20 to-cyan-500/30 border border-emerald-400/50 flex items-center justify-center text-emerald-300 font-extrabold text-xs shadow-lg shadow-emerald-500/10 group-hover:border-emerald-300 transition">
+            46亿
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="serif-title font-bold text-base sm:text-lg text-white tracking-tight">46亿分之一</span>
+            </div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex flex-wrap items-center gap-1 bg-slate-900/95 p-1 rounded-xl border border-slate-800">
+        <button data-nav="sim" class="nav-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+          🌍 演化剧场
+        </button>
+        <button data-nav="atlas" class="nav-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-slate-200 border border-transparent">
+          🦕 物种图鉴
+        </button>
+        <button data-nav="endings" class="nav-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-slate-200 border border-transparent">
+          🏆 12大结局
+        </button>
+        <button data-nav="memorial" class="nav-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-slate-200 border border-transparent">
+          🕯️ 地质追思馆
+        </button>
+      </nav>
+
+      <!-- Language Switcher, Beta Feedback, Viral Poster & Export Quick Actions -->
+      <div class="flex flex-wrap items-center gap-1.5">
+        <div class="flex items-center bg-slate-900 border border-cyan-500/40 rounded-lg px-2 py-1 text-xs text-cyan-200" title="语言 / Language">
+          <span class="mr-1">🌐</span>
+          <select id="globalLangSelect" aria-label="语言 / Language" class="bg-transparent text-xs font-semibold text-cyan-200 focus:outline-none cursor-pointer">
+            <option value="auto" class="bg-slate-900 text-white">Auto</option>
+            <option value="zh" class="bg-slate-900 text-white">简体中文</option>
+            <option value="en" class="bg-slate-900 text-white">English</option>
+          </select>
+        </div>
+        <div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900/95 border border-amber-500/40 text-xs font-mono" title="跨周目永恒琥珀结晶（用于先祖圣殿永久天赋加点）">
+          <span>💎</span>
+          <span class="text-slate-400">琥珀:</span>
+          <strong id="topAmberCrystalCount" class="text-amber-300">120</strong>
+        </div>
+        <button id="openSanctuaryTopBtn" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-purple-500/20 hover:bg-purple-500/35 text-purple-200 border border-purple-400/50 transition flex items-center gap-1 shadow-md" title="打开先祖基因圣殿（局外永久天赋养成）">
+          <span>🏛️</span><span class="hidden md:inline">先祖圣殿</span>
+        </button>
+        <button id="openViralCenterTopBtn" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-amber-500/25 to-rose-500/25 hover:from-amber-500/40 hover:to-rose-500/40 text-amber-200 border border-amber-400/50 transition flex items-center gap-1 shadow-md" title="生命海报与血脉接力">
+          <span>🖼️</span><span data-i18n="btn_poster">生命海报</span>
+        </button>
+        <button id="bgmToggleBtn" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-indigo-500/20 hover:bg-indigo-500/35 text-indigo-200 border border-indigo-400/50 transition flex items-center gap-1 shadow" title="开启/关闭程序化电子史诗合成器背景音乐 (Procedural Synth BGM)">
+          <span id="bgmIcon">🎵</span>
+          <span id="bgmLabel" class="hidden md:inline">BGM: 关</span>
+        </button>
+        <button id="audioToggleBtn" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 transition flex items-center gap-1" title="切换演化合成音效">
+          <span id="audioIcon">🔇</span>
+          <span id="audioLabel" class="hidden md:inline">音效: 关</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-5 space-y-6">
+
+    <!-- ==================== VIEW 1: SIMULATION (LOBBY + BIRTH CARD + ACTIVE GAME STAGE + ENDING) ==================== -->
+    <section id="view-sim" class="space-y-6">
+
+      <!-- SUBVIEW 1A: PRE-BIRTH LOBBY -->
+      <div id="subview-lobby" class="space-y-6">
+        <!-- ==================== v11.0 STEAM / SWITCH STYLE GAME CLIENT LAUNCHER ==================== -->
+        <div id="v11GameLauncherHero" class="game-cockpit-shell rounded-2xl p-5 sm:p-7 border-2 border-amber-400/60 space-y-5 relative overflow-hidden">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/90 pb-4">
+            <div class="space-y-1">
+              <h1 class="serif-title text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+                选择你要走过的一生
+              </h1>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <div class="px-3.5 py-2 rounded-xl bg-slate-950/90 border border-amber-500/50 text-right font-mono">
+                <div class="text-[10px] text-slate-400">账户永恒琥珀结晶</div>
+                <div class="text-base font-extrabold text-amber-300">💎 <span id="heroLauncherAmber">120</span></div>
+              </div>
+              <button type="button" id="toggleLobbyAdvancedSettingsBtn" class="px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-300 border border-cyan-500/40 text-xs font-bold transition">
+                更多物种与设置 ▾
+              </button>
+            </div>
+          </div>
+
+          <div id="saveLobbyCard" class="hidden p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/45">
+            <div id="saveLobbyMessage" role="status"></div>
+            <button id="continueLifeBtn" type="button" class="hidden px-4 py-2 mt-3 rounded-lg bg-emerald-400 text-slate-950 font-bold">继续当前生命</button>
+            <button id="exportSaveBtn" type="button" class="hidden px-4 py-2 mt-3 rounded-lg border border-slate-500">导出存档</button>
+          </div>
+
+          <!-- Life modes -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Mode 1: Prehistoric Spore Action-Roguelike -->
+            <div class="game-mode-card rounded-2xl p-5 border-2 border-emerald-500/60 flex flex-col justify-between gap-4">
+              <div class="space-y-2">
+<h3 class="serif-title text-xl font-bold text-white">古生物演化</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">从白垩纪的君王暴龙开始。捕食、应对天敌，并让新的器官随你的抉择长出来。其他物种可在图鉴选择。</p>
+              </div>
+              <button type="button" id="heroStartModeDinoBtn" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 hover:from-emerald-400 hover:to-cyan-300 text-slate-950 font-extrabold text-sm shadow-xl transition">
+                开始演化 →
+              </button>
+            </div>
+
+            <!-- Mode 2: 1 in 8 Billion Modern Human RPG -->
+            <div class="game-mode-card rounded-2xl p-5 border-2 border-amber-400/70 flex flex-col justify-between gap-4">
+              <div class="space-y-2">
+<h3 class="serif-title text-xl font-bold text-white">现代人生</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">从五种家庭处境中选择自己的起点，经历求学、离家、工作和团聚。关系与健康会随你的选择改变。</p>
+              </div>
+              <button type="button" id="heroStartModeHumanBtn" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-400 hover:from-amber-400 hover:to-orange-300 text-slate-950 font-extrabold text-sm shadow-xl transition">
+                选择出生家庭 →
+              </button>
+            </div>
+
+          </div>
+        </div>
+        
+        <!-- Live 60FPS Title Screen Evolution Showcase Strip -->
+        <div class="baskerville-frame rounded-2xl p-3 sm:p-4 border border-emerald-500/40 bg-slate-950/95">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2 text-xs">
+            <span class="font-extrabold text-emerald-300 flex items-center gap-1.5">
+              <span>从深海到陆地</span>
+            </span>
+            
+          </div>
+          <canvas id="lobbyHeroShowcaseCanvas" width="920" height="150" class="w-full h-28 sm:h-36 rounded-xl bg-slate-950 block"></canvas>
+        </div>
+
+        <!-- Collapsible Advanced Setup & Past Lives Drawer (Hidden by default so Title Screen is 100% Pure Game!) -->
+        <div id="lobbyAdvancedSetupDrawer" class="hidden space-y-6 pt-4 border-t border-slate-800/90">
+        <!-- Lobby Main Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-7 glass-card rounded-2xl p-5 sm:p-6 space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3.5">
+              <div>
+                <h2 class="serif-title text-lg sm:text-xl font-bold text-white">🎲 投胎参数与家族初代设定</h2>
+                <p class="text-xs text-slate-400 mt-0.5">开启【第 1 世】初代降生，努力繁衍子代以解锁跨世代血脉传承</p>
+              </div>
+              <button id="viewAll24Btn" class="text-xs text-emerald-400 hover:text-emerald-300 font-medium underline underline-offset-4">
+                浏览物种图鉴 →
+              </button>
+            </div>
+
+            <!-- 1. Era Filter -->
+            <div class="space-y-2">
+              <label class="block text-xs font-semibold text-slate-300">1. 选择降生时代范围（Geological Era）</label>
+              <div class="grid grid-cols-2 sm:grid-cols-6 gap-2">
+                <button data-era="all" class="era-btn px-2.5 py-2 rounded-xl text-xs font-medium border transition bg-emerald-500/20 border-emerald-500/50 text-emerald-200">🌌 全46亿年</button>
+                <button data-era="precambrian" class="era-btn px-2.5 py-2 rounded-xl text-xs font-medium border transition bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700">🌋 太古/元古</button>
+                <button data-era="paleozoic" class="era-btn px-2.5 py-2 rounded-xl text-xs font-medium border transition bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700">🦐 古生代</button>
+                <button data-era="mesozoic" class="era-btn px-2.5 py-2 rounded-xl text-xs font-medium border transition bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700">🦖 中生代恐龙</button>
+                <button data-era="cenozoic" class="era-btn px-2.5 py-2 rounded-xl text-xs font-medium border transition bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700">🦣 新生代巨兽</button>
+                <button data-era="humanity" class="era-btn px-2.5 py-2 rounded-xl text-xs font-bold border transition bg-amber-500/20 border-amber-400/60 text-amber-200 shadow-md">🧑 人类文明纪元</button>
+              </div>
+              <p id="eraDescText" class="text-[11px] text-slate-400 bg-slate-900/60 px-3 py-2 rounded-lg border border-slate-800/80">
+                跨越冥古宙深海热泉、寒武纪海洋、侏罗纪丛林直至现代冰原，所有年代的真实古气候与灭绝事件均会生效。
+              </p>
+            </div>
+
+            <!-- 2. Draw Weight Mode -->
+            <div class="space-y-2">
+              <label class="block text-xs font-semibold text-slate-300">2. 物种抽选方式</label>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <button data-draw="milestone" class="draw-btn p-3 rounded-xl text-left border transition bg-emerald-500/20 border-emerald-500/50 text-emerald-200">
+                  <div class="font-bold text-xs">🌟 演化代表性权重 (推荐)</div>
+                  <div class="text-[11px] text-slate-300 mt-1">按游戏设定的权重抽取物种，如霸王龙、奇虾、蓝鲸和提塔利克鱼。</div>
+                </button>
+                <button data-draw="biomass" class="draw-btn p-3 rounded-xl text-left border transition bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700">
+                  <div class="font-bold text-xs">🔬 按估算丰度抽选</div>
+                  <div class="text-[11px] text-slate-400 mt-1">按游戏估算的丰度抽取，微生物和三叶虫等更常见。</div>
+                </button>
+                <button data-draw="manual" class="draw-btn p-3 rounded-xl text-left border transition bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700">
+                  <div class="font-bold text-xs">🎯 指定物种直接扮演</div>
+                  <div class="text-[11px] text-slate-400 mt-1">从当前时代范围内直接选择初代物种。</div>
+                </button>
+              </div>
+              <div id="manualSpeciesPickerWrap" class="hidden pt-2">
+                <select id="manualSpeciesSelect" class="w-full bg-slate-900 border border-emerald-500/50 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none"></select>
+              </div>
+            </div>
+
+            <!-- 3. Gameplay Depth & Pacing Settings -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">抉择密度与推进模式</label>
+                <select id="paceSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+                  <option value="2200" selected>🎮 全抉择深度肉鸽模式 (每阶段随机奇遇 · 强烈推荐)</option>
+                  <option value="3200">⚡ 快速流年 + 高频抉择 (2.5秒/阶段)</option>
+                  <option value="5000">🕰️ 沉浸慢节奏模式 (5秒/阶段 · 细品骨骼解剖演化)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1">并排参照物种与能量单位</label>
+                <div class="grid grid-cols-2 gap-2">
+                  <select id="refSpeciesSelect" class="bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-slate-200 focus:outline-none">
+                    <option value="human">对比: 现代智人</option>
+                    <option value="trex">对比: 君王暴龙</option>
+                    <option value="bluewhale">对比: 现代蓝鲸</option>
+                    <option value="mayfly">对比: 24h蜉蝣</option>
+                  </select>
+                  <select id="energyUnitSelect" class="bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-slate-200 focus:outline-none">
+                    <option value="kcal">单位: 千卡(kcal)</option>
+                    <option value="atp">单位: ATP摩尔</option>
+                    <option value="grams">单位: 猎物克数</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-slate-800">
+              <label class="inline-flex items-center gap-2 cursor-pointer text-xs text-slate-300">
+                <input type="checkbox" id="gentleModeToggle" class="rounded bg-slate-900 border-slate-700 text-emerald-500 focus:ring-0" />
+                <span>🌿 温和自然叙事（降低幼年期意外暴毙率，更容易延续多世血脉）</span>
+              </label>
+              <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+                <button id="quickPlayHumanBtn" class="px-4 py-3 rounded-xl bg-gradient-to-r from-amber-500/30 to-orange-500/30 hover:from-amber-500/45 hover:to-orange-500/45 text-amber-200 font-extrabold text-xs sm:text-sm border border-amber-400/60 transition shadow-lg flex items-center gap-1.5">
+                  <span>🧑</span><span>我要扮演人类 (古猿/智人/现代人)</span>
+                </button>
+                <button id="randomQuickStartBtn" class="px-3.5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-300 font-semibold text-xs sm:text-sm border border-emerald-500/30 transition">
+                  🦖 霸王龙/奇虾直通
+                </button>
+                <button id="startBirthBtn" class="px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 hover:from-emerald-400 hover:to-cyan-300 text-slate-950 font-extrabold text-sm sm:text-base transition shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-1.5">
+                  <span>🌱 开启第 1 世</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- NEW: Viral Person-to-Person Bloodline Relay Box in Lobby -->
+            <div class="p-3.5 rounded-xl bg-gradient-to-r from-amber-950/35 via-slate-900/90 to-purple-950/35 border border-amber-500/40 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+              <div class="space-y-0.5">
+                <div class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                  <span>好友血脉接力</span>
+                </div>
+                <p class="text-[11px] text-slate-300">输入好友的接力码，作为下一代降生，并继承部分能力。</p>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <input type="text" id="lobbyBloodlineCodeInput" maxlength="64" placeholder="输入 46B 血脉码" class="bg-slate-950 border border-amber-500/40 rounded-lg px-2.5 py-1.5 text-xs font-mono text-amber-200 w-36 sm:w-40 focus:outline-none focus:border-amber-400" />
+                <button type="button" id="applyBloodlineCodeBtn" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition">
+                  🧬 接力降生
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: v10.0 Interactive Game Hub (Instant Arcade Launch + Lobby Sanctuary & Relic Gacha) -->
+          <div class="lg:col-span-5 space-y-5">
+            <div class="game-cockpit-shell rounded-2xl p-5 space-y-4 border border-amber-500/50">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40 font-mono font-bold">先祖圣殿</span>
+                  <h3 class="serif-title text-base sm:text-lg font-bold text-white mt-1">快速选择与传承</h3>
+                </div>
+                <div class="text-right font-mono text-xs">
+                  <div class="text-amber-300 font-extrabold">💎 <span id="lobbyAmberCount">120</span> 琥珀</div>
+                  <div class="text-[10px] text-cyan-300">🎒 已收集 <span id="lobbyRelicCount">3</span>/12 圣物</div>
+                </div>
+              </div>
+
+              <!-- 1-Click Instant Action Launch Buttons (Skips Birth Card straight into 60FPS Action Stage!) -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <button type="button" id="instantArcadeDinoBtn" class="p-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 hover:from-emerald-400 hover:to-cyan-300 text-slate-950 font-extrabold text-xs shadow-xl transition flex items-center justify-center gap-1.5">
+                  <span>🦖</span><span>一键直进：史前巨兽进化战</span>
+                </button>
+                <button type="button" id="instantArcadeHumanBtn" class="p-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-400 to-rose-400 hover:from-amber-400 hover:to-rose-300 text-slate-950 font-extrabold text-xs shadow-xl transition flex items-center gap-1.5 justify-center">
+                  <span>🧑‍🚀</span><span>开始一段现代人生</span>
+                </button>
+              </div>
+
+              <!-- Interactive Lobby Mini-Sanctuary & Relic Gacha -->
+              <div class="p-3.5 rounded-xl bg-slate-950/90 border border-purple-500/40 space-y-2.5 text-xs">
+                <div class="flex items-center justify-between">
+                  <span class="font-extrabold text-purple-300">🏛️ 局外先祖天赋与开局圣物祈愿</span>
+                  <button type="button" id="lobbyGachaSummonBtn" class="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-[11px] transition shadow">
+                    🎲 祈愿抽圣物 (30💎)
+                  </button>
+                </div>
+                <div id="lobbyQuickSanctuaryList" class="grid grid-cols-2 gap-2 text-[11px]"></div>
+              </div>
+            </div>
+
+            <!-- Past Lives & Dynasty Records -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="serif-title text-base font-bold text-white">家族血脉与前世档案库</h3>
+                  <p class="text-[11px] text-slate-400">记录你缔造的最高血脉世系与历代先祖结局</p>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button id="transferRecordsBtn" class="px-2.5 py-1 rounded-lg text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">档案码</button>
+                  <button id="clearRecordsBtn" class="px-2.5 py-1 rounded-lg text-[11px] bg-rose-950/60 hover:bg-rose-900/60 text-rose-300 border border-rose-800/50 transition">清空</button>
+                </div>
+              </div>
+              <div id="pastLivesLobbyList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+            </div>
+          </div>
+        </div>
+      
+        </div>
+</div>
+
+      <!-- SUBVIEW 1B: BIRTH REGISTRATION MODAL / CARD (Supports Gen 1 & Multi-Gen Lineage Inheritance!) -->
+      <div id="subview-birthcard" class="hidden max-w-4xl mx-auto">
+        <div class="glass-card rounded-2xl p-6 sm:p-8 border border-emerald-500/40 shadow-2xl space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span id="birthGenerationBadge" class="text-xs px-3 py-1 rounded-full bg-amber-500/25 text-amber-300 border border-amber-400/50 font-bold">🧬 家族血脉：第 1 世（初代起源）</span>
+                <span id="birthEraBadge" class="text-xs px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium"></span>
+              </div>
+              <h2 class="serif-title text-2xl sm:text-3xl font-bold text-white mt-2" id="birthSpeciesTitle"></h2>
+              <p class="text-xs sm:text-sm text-slate-400 font-mono mt-0.5" id="birthSpeciesLatin"></p>
+            </div>
+            <div class="flex items-center gap-3">
+              <div id="birthSpeciesEmoji" class="text-5xl sm:text-6xl bg-slate-900/90 p-4 rounded-2xl border border-slate-700 shadow-inner"></div>
+            </div>
+          </div>
+
+          <!-- Current Run Randomized World Climate Modifier Banner -->
+          <div id="birthWorldModifierBox" class="p-3.5 rounded-xl bg-gradient-to-r from-cyan-950/50 via-slate-900 to-purple-950/40 border border-cyan-500/40 flex items-center justify-between gap-3 text-xs"></div>
+
+          <!-- Inherited Ancestral Organs Banner (Shown when Generation >= 2) -->
+          <div id="birthInheritedLegacyBox" class="hidden p-4 rounded-2xl bg-amber-950/25 border border-amber-500/50 space-y-2"></div>
+
+          <!-- Paleo-environment & Birth Odds Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="birthEnvStatsGrid"></div>
+
+          <!-- v7.0: 1in8b.life Global Birth Country & Destiny Switcher (体验不同出生国度与阶层的真实命运差异) -->
+          <div id="birthCountrySwitcherWrap" class="p-4 rounded-2xl bg-slate-900/90 border border-amber-500/40 space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                <span>🌍 投胎降生点与命运难度（五种故事起点）</span>
+              </div>
+              <span class="text-[11px] text-slate-400">可保持随机天命，也可点击体验不同国度的残酷或优渥开局</span>
+            </div>
+            <div id="birthCountryButtonsGrid" class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-xs"></div>
+          </div>
+
+          <!-- Innate Genetic Trait Selection -->
+          <div class="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/30 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-300">🧬 选择本世先天基因变异方向（将直接改造你的初始解剖器官并在画布中具象呈现）：</span>
+              <span class="text-[11px] text-slate-400 font-mono">三选一</span>
+            </div>
+            <div id="birthInnateTraitPicker" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5"></div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+            <div class="text-xs font-semibold text-cyan-400">📜 降生古生态处境与生存法则</div>
+            <p id="birthOpeningLore" class="text-xs sm:text-sm text-slate-200 leading-relaxed"></p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end pt-2">
+            <div>
+              <label class="block text-xs text-slate-400 mb-1">为本世生命赋予个体代号（可改）：</label>
+              <input type="text" id="customIndividualNameInput" maxlength="30" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500" />
+            </div>
+            <div class="flex items-center gap-2.5 justify-end">
+              <button id="rerollBirthBtn" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs sm:text-sm font-medium border border-slate-700 transition">
+                🎲 重新随机物种/天命
+              </button>
+              <button id="confirmEnterLifeBtn" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-extrabold text-xs sm:text-sm transition shadow-lg shadow-emerald-500/25">
+                进入具象生态剧场 · 开启本世 →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBVIEW 1C: ACTIVE LIFE SIMULATION DASHBOARD -->
+      <div id="subview-active" class="hidden space-y-5">
+        <!-- Simulation controls -->
+        <div id="activeLifeStatusBar" class="glass-card rounded-2xl p-3 sm:p-4 border border-slate-700/80 shadow-2xl">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <!-- Species, Generation Badge & Archetype -->
+            <div class="flex items-center gap-3">
+              <div id="activeEmojiAvatar" class="w-11 h-11 rounded-xl bg-slate-900 border border-emerald-500/40 flex items-center justify-center text-2xl shadow-inner"></div>
+              <div>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span id="activeGenerationTag" class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/25 text-amber-300 border border-amber-400/50 font-bold">🧬 第 1 世</span>
+                  <span id="activeSpeciesName" class="font-bold text-white text-sm sm:text-base"></span>
+                  <span id="activeIndividualTag" data-user-text class="text-xs px-2 py-0.5 rounded bg-slate-800 text-emerald-300 font-mono"></span>
+                  <span id="activeArchetypeBadge" class="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold">🌱 初生幼体</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 text-xs text-slate-400 mt-0.5">
+                  <span id="activeAgeDisplay" class="font-mono font-semibold text-amber-300"></span>
+                  <span>·</span>
+                  <span id="activeMorphStageLabel" class="text-cyan-300 font-medium"></span>
+                  <span>·</span>
+                  <span id="activeWorldModBadge" class="text-purple-300 font-medium"></span>
+                  <span class="hidden md:inline">·</span>
+                  <span id="activeEraDisplay" class="hidden md:inline"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Speed & Playback Controls -->
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button id="toggleXrayBtn" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 transition" title="切换画布生物X光内脏/骨骼透视视图">
+                🩻 解剖透视: 开
+              </button>
+              <button id="simPauseBtn" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition">
+                ❚❚ 暂停
+              </button>
+              <div class="inline-flex rounded-lg bg-slate-900 p-0.5 border border-slate-800" id="speedBtnsWrap">
+                <button data-speed="1" class="speed-btn px-2 py-1 rounded-md text-xs font-mono bg-emerald-500/20 text-emerald-300 font-semibold">1×</button>
+                <button data-speed="2" class="speed-btn px-2 py-1 rounded-md text-xs font-mono text-slate-400 hover:text-white">2×</button>
+                <button data-speed="4" class="speed-btn px-2 py-1 rounded-md text-xs font-mono text-slate-400 hover:text-white">4×</button>
+                <button data-speed="8" class="speed-btn px-2 py-1 rounded-md text-xs font-mono text-slate-400 hover:text-white">8×</button>
+              </div>
+              <button id="nextDecisionJumpBtn" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 transition" title="立即推进到下一个人生抉择">
+                ⚡ 下一抉择 »
+              </button>
+              <button id="autoChoiceToggleBtn" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 transition">
+                🤖 自动: 关
+              </button>
+              <button id="writeThoughtBtn" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-900 hover:bg-slate-800 text-amber-300 border border-slate-700 transition">
+                ✎ 手记
+              </button>
+              <button id="abandonLifeBtn" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-200 border border-slate-700 transition">
+                返回大厅
+              </button>
+            </div>
+          </div>
+
+          <!-- Progress Bar of 20 Life Stages -->
+          <div class="mt-2.5 flex items-center gap-3">
+            <div class="flex-1 h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+              <div id="activeLifeProgressBar" class="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-amber-400 transition-all duration-300" style="width: 5%"></div>
+            </div>
+            <span id="activeStageLabel" class="text-[11px] font-mono text-slate-300 shrink-0">阶段 1 / 20 · 已做抉择 0 次</span>
+          </div>
+        </div>
+
+        <div id="firstLifeGuide" class="rounded-xl border border-cyan-800 bg-cyan-950/40 p-3 text-sm text-cyan-100">
+          <b id="firstLifeObjective"></b>
+          <p id="firstLifeControls" class="mt-1 text-xs text-slate-300"></p>
+        </div>
+        <div id="storyBeforeStageAnchor" class="hidden"></div>
+        <button id="viewBossLootBtn" type="button" class="hidden rounded-xl px-3 py-2 bg-amber-500 text-slate-950 font-bold text-xs">领取首领奖励</button>
+
+        <!-- ==================== v10.0 GAME PRODUCT HUD: LEVEL/EXP BAR + BOSS/TRIBULATION HP BAR + CURRENCY ==================== -->
+        <div class="game-cockpit-shell rounded-2xl p-3 sm:p-4 space-y-2.5">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
+            <!-- Left 5 Cols: Player Level, EXP Bar & Evolution DNA Points -->
+            <div class="lg:col-span-5 flex items-center gap-3 bg-slate-950/90 px-3.5 py-2 rounded-xl border border-emerald-500/40">
+              <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500/30 to-cyan-500/30 border border-emerald-400 flex flex-col items-center justify-center shrink-0">
+                <span class="text-[9px] font-mono text-emerald-300 leading-none">LEVEL</span>
+                <span id="gameHudPlayerLv" class="text-base font-extrabold font-mono text-white leading-tight">1</span>
+              </div>
+              <div class="flex-1 min-w-0 space-y-1">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-bold text-emerald-300 truncate" id="gameHudExpTitle">🧬 实时演化经验 (捕食/连击/抉择)</span>
+                  <span id="gameHudExpText" class="font-mono text-[11px] text-slate-300">0 / 100 EXP</span>
+                </div>
+                <div class="h-2.5 bg-slate-900 rounded-full overflow-hidden border border-emerald-500/30">
+                  <div id="gameHudExpBar" class="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-300 transition-all duration-200" style="width: 15%"></div>
+                </div>
+              </div>
+              <div class="px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-400/60 text-center shrink-0">
+                <div class="text-[9px] text-amber-200">可用进化点</div>
+                <div class="text-sm font-extrabold font-mono text-amber-300">🧬 <span id="gameHudDnaPoints">2</span></div>
+              </div>
+            </div>
+
+            <!-- Center 5 Cols: Active Stage Boss / Life Tribulation HP Bar -->
+            <div class="lg:col-span-5 bg-slate-950/90 px-3.5 py-2 rounded-xl border border-rose-500/50 boss-bar-glow space-y-1">
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-1.5 truncate">
+                  <span id="gameBossIcon" class="text-base">🦖</span>
+                  <span id="gameBossName" class="font-extrabold text-rose-200 truncate">纪元首领 · 寒武纪奇虾霸主</span>
+                </div>
+                <span id="gameBossHpText" class="font-mono font-bold text-rose-300 text-[11px] shrink-0">HP 300 / 300</span>
+              </div>
+              <div class="h-3 bg-slate-900 rounded-full overflow-hidden border border-rose-500/40 relative">
+                <div id="gameBossHpBar" class="h-full bg-gradient-to-r from-rose-600 via-red-500 to-amber-400 transition-all duration-150" style="width: 100%"></div>
+              </div>
+              <div class="flex items-center justify-between text-[10px] text-slate-400">
+                <span id="gameBossHint">💡 鼠标点击画布移动/冲刺撞击猎物，或按 Q/W/E/R 施放技能击破试炼！</span>
+                <span id="gameBossRewardBadge" class="text-amber-300 font-mono">击破奖励: +2🧬 +圣物宝箱</span>
+              </div>
+            </div>
+
+            <!-- Right 2 Cols: Live Combo & Control Mode -->
+            <div class="lg:col-span-2 flex items-center justify-between lg:justify-center gap-2 bg-slate-950/90 px-3 py-2 rounded-xl border border-cyan-500/40">
+              <div class="text-center">
+                <div class="text-[10px] text-cyan-300 font-semibold">🔥 捕食连击</div>
+                <div id="gameHudComboText" class="text-lg font-extrabold font-mono text-amber-300 leading-tight">0 HIT</div>
+              </div>
+              <button type="button" id="toggleStagePilotBtn" class="px-2.5 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-300 border border-emerald-500/40 text-[11px] font-bold transition" title="切换手动键鼠操控 / AI自动巡航捕食">
+                🕹️ 自动巡航: 开
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- ==================== TOP VISUAL ROW: LIVE 60FPS SPORE EVOLUTION STAGE (8 cols) + REAL-TIME ORGAN BLUEPRINT (4 cols) ==================== -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- Left 8 Cols: 60FPS Spore-Style Progressive Organism Evolution & Baskerville Chiaroscuro Stage -->
+          <div id="gameStageWrapper" class="lg:col-span-8 baskerville-frame rounded-2xl overflow-hidden flex flex-col justify-between relative">
+            <canvas id="paleoStageCanvas" tabindex="0" aria-label="演化舞台 / Life stage" width="900" height="360" class="w-full h-64 sm:h-80 block cursor-pointer"></canvas>
+
+            <!-- Top-Left Live Environment Telemetry Overlay -->
+            <div class="absolute top-3 left-3 flex flex-wrap items-center gap-1.5 pointer-events-none">
+              <div class="px-2.5 py-1 rounded-lg bg-slate-950/85 backdrop-blur-md border border-emerald-500/40 text-[11px] font-mono text-emerald-300 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="stageBiomeTitle">🧬 孢子具象演化剧场</span>
+              </div>
+              <div id="stageWeatherBadge" class="px-2.5 py-1 rounded-lg bg-slate-950/85 backdrop-blur-md border border-slate-700/80 text-[11px] text-cyan-300">
+                ☀️ 生态稳定
+              </div>
+              <div id="stageOffspringBadge" class="px-2.5 py-1 rounded-lg bg-purple-950/90 backdrop-blur-md border border-purple-500/50 text-[11px] font-bold text-purple-200">
+                🪺 存活子嗣: 0 (需≥1方可开启下一世)
+              </div>
+            </div>
+
+            <!-- Top-Right Baskerville Awakening Rank & Evolutionary Path Meter -->
+            <div class="absolute top-3 right-3 flex flex-wrap items-center gap-2 z-20">
+              <div id="stageAwakeningRankBadge" class="px-3 py-1 rounded-xl bg-gradient-to-r from-amber-500/30 via-yellow-500/20 to-amber-600/30 border border-amber-400/70 text-amber-200 font-serif font-extrabold text-xs shadow-lg backdrop-blur-md">
+                ⚜️ 血脉阶位：D级 · 初生孢子幼体
+              </div>
+              <div class="hidden sm:flex items-center gap-1.5 bg-slate-950/85 backdrop-blur-md px-2.5 py-1 rounded-xl border border-slate-700/80 text-[11px] pointer-events-none">
+                <span class="text-rose-400 font-semibold" id="hudPathTyrant">⚔️0</span>
+                <span class="text-slate-600">|</span>
+                <span class="text-purple-400 font-semibold" id="hudPathDynasty">🧬0</span>
+                <span class="text-slate-600">|</span>
+                <span class="text-cyan-400 font-semibold" id="hudPathPioneer">🌌0</span>
+              </div>
+              <button type="button" id="stageQuickPosterBtn" class="px-2.5 py-1 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-[11px] shadow-lg transition flex items-center gap-1">
+                <span>🖼️</span><span>生命海报</span>
+              </button>
+            </div>
+
+            <!-- 5-Phase Metamorphosis Milestone Strip on Stage -->
+            <div id="stageMorphTimelineBar" class="bg-slate-950/92 border-t border-slate-800/90 px-3 py-1.5 flex items-center justify-between gap-1 text-[10px] font-mono overflow-x-auto">
+              <span class="text-emerald-300 font-bold">🥚 Ⅰ.孢子初生(0.55x)</span>
+              <span class="text-slate-600">➔</span>
+              <span class="text-slate-400">🌱 Ⅱ.幼体破壳(0.75x)</span>
+              <span class="text-slate-600">➔</span>
+              <span class="text-slate-400">🦎 Ⅲ.亚成体分化(0.95x)</span>
+              <span class="text-slate-600">➔</span>
+              <span class="text-slate-400">🦖 Ⅳ.完全体霸主(1.20x)</span>
+              <span class="text-slate-600">➔</span>
+              <span class="text-slate-400">👑 Ⅴ.神话泰坦体(1.45x)</span>
+            </div>
+
+            <!-- Bottom Interactive Creature Action Bar on Stage -->
+            <div class="bg-slate-950/95 border-t border-slate-800/80 px-3 py-2 flex flex-wrap items-center justify-between gap-2">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <button id="stageActionScanBtn" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[11px] font-medium transition flex items-center gap-1 shadow">
+                  <span>👁️</span><span>感官声呐脉冲 (+适应)</span>
+                </button>
+                <button id="stageActionRoarBtn" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-amber-950/90 text-amber-300 border border-amber-500/40 text-[11px] font-medium transition flex items-center gap-1 shadow">
+                  <span>🌺</span><span>华冠信息素共鸣 (+繁衍)</span>
+                </button>
+                <button id="stageActionDashBtn" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-rose-950/90 text-rose-300 border border-rose-500/40 text-[11px] font-medium transition flex items-center gap-1 shadow">
+                  <span>🦷</span><span>利颚突袭捕食 (+能量)</span>
+                </button>
+              </div>
+              <div id="stageLiveActionCaption" class="px-2.5 py-1 rounded-lg bg-slate-900/95 border border-amber-500/30 text-[11px] text-amber-200 truncate max-w-xs sm:max-w-md font-medium">
+                💡 悬停下方命运卡牌可实时预演【器官进化全息部位】与【四维属性增减】，点击触发捕食与基因蜕变动画！
+              </div>
+            </div>
+          </div>
+
+          <!-- Right 4 Cols: REAL-TIME SPORE ANATOMICAL & ORGAN BLUEPRINT PANEL (具象化能力与器官成长透视图谱) -->
+          <div id="organBlueprintCard" class="lg:col-span-4 baskerville-frame rounded-2xl p-4 border border-cyan-500/40 flex flex-col justify-between space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+              <div>
+                <h3 class="text-xs sm:text-sm font-bold text-cyan-300 flex items-center gap-1.5">
+                  <span>🔬 生物器官解剖与能力进化蓝图</span>
+                </h3>
+                <p class="text-[10px] text-slate-400">悬停选项预演部位升级 · 每次抉择具象改造躯体并遗传子代</p>
+              </div>
+              <span id="totalOrganLevelBadge" class="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                进化总阶 Lv.1
+              </span>
+            </div>
+
+            <!-- Interactive SVG Organ Diagram -->
+            <div class="bg-slate-950/95 rounded-xl p-2 border border-slate-800/90 relative shadow-inner">
+              <svg id="anatomyBlueprintSvg" viewBox="0 0 320 145" class="w-full h-36 overflow-visible"></svg>
+            </div>
+
+            <!-- 6 Concrete Organ Upgrade Bars -->
+            <div id="organNodesGrid" class="grid grid-cols-2 gap-2 text-[11px]"></div>
+          </div>
+        </div>
+
+        <!-- ==================== v11.0 LIVE BOUNTY QUEST TRACKER + BOSS PARRY ALERT BAR ==================== -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
+          <!-- Left 8 Cols: 3 Live Bounty Quests with Instant Claim Rewards -->
+          <div class="lg:col-span-8 glass-card rounded-2xl p-3 border border-emerald-500/40 bg-slate-950/90">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-extrabold text-emerald-300 flex items-center gap-1.5">
+                <span>🎯 实时纪元悬赏任务 (完成即领进化点与琥珀奖励)</span>
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">任务达成后自动刷新下一阶悬赏</span>
+            </div>
+            <div id="liveBountyQuestsGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs"></div>
+          </div>
+
+          <!-- Right 4 Cols: Boss Telegraph Alert & 1-Click Matrix Parry + Gene Rune Pouches -->
+          <div class="lg:col-span-4 glass-card rounded-2xl p-3 border border-amber-500/50 bg-slate-950/95 flex flex-col justify-between gap-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-amber-300">⚗️ 舞台三色基因符文袋:</span>
+              <div class="flex items-center gap-2 font-mono font-extrabold">
+                <span class="text-rose-400" title="狂暴红基因">🔴<strong id="runeCountRed">1</strong></span>
+                <span class="text-cyan-400" title="智慧蓝基因">🔵<strong id="runeCountBlue">1</strong></span>
+                <span class="text-purple-400" title="繁衍紫基因">🟣<strong id="runeCountPurple">1</strong></span>
+              </div>
+            </div>
+            <button type="button" id="stageParryCounterBtn" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-slate-800 to-slate-900 hover:from-amber-500 hover:to-rose-500 text-amber-200 hover:text-slate-950 font-extrabold text-xs border border-amber-400/60 transition flex items-center justify-center gap-2 shadow-lg">
+              <span>⚡</span><span id="parryBtnLabelText">极意弹反准备 (首领红圈蓄力时按空格或点击反杀!)</span>
+            </button>
+          </div>
+        </div>
+        
+
+        <!-- ==================== v10.0 ACTIVE 4-SKILL HOTBAR ([Q] [W] [E] [R]) + D20 ROULETTE TOGGLE ==================== -->
+        <div class="glass-card rounded-2xl p-3 sm:p-4 border border-amber-500/40 bg-slate-950/95">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-extrabold px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-400/40">
+                ⚡ 主动技能与觉醒连招栏 (支持键盘 Q / W / E / R 或点击释放)
+              </span>
+              <span class="text-[11px] text-slate-400 hidden xl:inline">在画布上点击移动吃球攒怒气，施放技能秒杀纪元首领！</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-1.5 text-xs">
+                <span class="text-amber-300 font-bold">🔥 觉醒怒气:</span>
+                <div class="w-24 h-2.5 bg-slate-900 rounded-full overflow-hidden border border-amber-500/40">
+                  <div id="gameRageBar" class="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 transition-all duration-200" style="width: 40%"></div>
+                </div>
+                <span id="gameRageVal" class="font-mono font-bold text-amber-300 text-[11px]">40%</span>
+              </div>
+              <label class="inline-flex items-center gap-1.5 text-[11px] text-slate-300 cursor-pointer">
+                <input type="checkbox" id="enableDestinyRouletteToggle" checked class="rounded bg-slate-900 border-slate-700 text-amber-500 focus:ring-0" />
+                <span>🎲 开启命运轮盘检定动画</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-3">
+            <!-- Skill Q -->
+            <button type="button" id="skillBtnQ" class="skill-slot-btn rounded-xl p-2.5 text-left flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-lg bg-rose-500/25 border border-rose-400/60 flex items-center justify-center text-xl shrink-0">🦷</div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-extrabold text-xs text-white truncate" id="skillNameQ">狂暴利颚突袭</span>
+                  <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-amber-300">[Q / 1]</span>
+                </div>
+                <div class="text-[10px] text-slate-300 truncate mt-0.5" id="skillDescQ">冲刺撕裂首领-95HP 并吞噬沿途基因球</div>
+              </div>
+              <div id="skillCdOverlayQ" class="skill-cd-overlay hidden"></div>
+            </button>
+
+            <!-- Skill W -->
+            <button type="button" id="skillBtnW" class="skill-slot-btn rounded-xl p-2.5 text-left flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-lg bg-emerald-500/25 border border-emerald-400/60 flex items-center justify-center text-xl shrink-0">🛡️</div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-extrabold text-xs text-white truncate" id="skillNameW">泰坦晶甲护盾</span>
+                  <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-emerald-300">[W / 2]</span>
+                </div>
+                <div class="text-[10px] text-slate-300 truncate mt-0.5" id="skillDescW">开启4秒无敌反伤金盾，恢复+15体魄</div>
+              </div>
+              <div id="skillCdOverlayW" class="skill-cd-overlay hidden"></div>
+            </button>
+
+            <!-- Skill E -->
+            <button type="button" id="skillBtnE" class="skill-slot-btn rounded-xl p-2.5 text-left flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-lg bg-cyan-500/25 border border-cyan-400/60 flex items-center justify-center text-xl shrink-0">🌌</div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-extrabold text-xs text-white truncate" id="skillNameE">全屏引力共鸣</span>
+                  <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-cyan-300">[E / 3]</span>
+                </div>
+                <div class="text-[10px] text-slate-300 truncate mt-0.5" id="skillDescE">磁吸全屏基因球与宝箱，适应与暴击+20%</div>
+              </div>
+              <div id="skillCdOverlayE" class="skill-cd-overlay hidden"></div>
+            </button>
+
+            <!-- Skill R (Awakening Ultimate) -->
+            <button type="button" id="skillBtnR" class="skill-slot-btn rounded-xl p-2.5 text-left flex items-center gap-2.5 border-amber-400">
+              <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500/40 to-rose-500/40 border border-amber-300 flex items-center justify-center text-xl shrink-0">🔥</div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-extrabold text-xs text-amber-200 truncate" id="skillNameR">远古血脉觉醒</span>
+                  <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/30 text-amber-200">[R / 4]</span>
+                </div>
+                <div class="text-[10px] text-amber-100/90 truncate mt-0.5" id="skillDescR">金身巨化8秒+天降激光轰击+进化点+2</div>
+              </div>
+              <div id="skillCdOverlayR" class="skill-cd-overlay hidden"></div>
+            </button>
+          </div>
+        </div>
+
+        <!-- ==================== v13.0 INTEGRATED VITAL CRYSTALS & FAN-OUT TAROT HAND TRAY ==================== -->
+        <div id="v13CompactVitalAndHandDock" class="space-y-2.5">
+          <!-- GAMIFIED 4 BIO-CRYSTAL VITAL GAUGES (Positioned right above Decision Cards for instant hover delta feedback!) -->
+            <div class="glass-card rounded-2xl p-2.5 sm:p-3 border border-emerald-500/40 bg-slate-950/95 space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                    💎 生命四维水晶能量槽
+                  </span>
+                  <span id="decisionActionPreviewTag" class="text-[11px] font-mono text-amber-300">
+                    💡 悬停下方命运卡牌可预演属性增减与器官进化
+                  </span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[11px] text-slate-400">生存重心:</span>
+                  <select id="annualFocusSelect" class="bg-slate-900 border border-emerald-500/40 rounded-lg px-2 py-1 text-[11px] text-emerald-300 font-medium focus:outline-none">
+                    <option value="forage">🍖 狩猎觅食 (+能量/+霸主)</option>
+                    <option value="stealth">🛡️ 隐蔽护体 (+体魄/降风险)</option>
+                    <option value="adapt">🧭 探索突变 (+适应/+先驱)</option>
+                    <option value="kinship">🪺 求偶育雏 (+繁衍/+子代)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                <div id="vitalCardVitality" class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5 transition">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-emerald-300">❤️ 体魄/健康</span>
+                    <div class="flex items-center gap-1">
+                      <span id="statVitalityVal" class="font-mono font-extrabold text-white">80</span>
+                      <span id="statVitalityDelta" class="hidden text-[10px] font-mono font-extrabold px-1 rounded"></span>
+                    </div>
+                  </div>
+                  <div class="h-2.5 rounded-full overflow-hidden crystal-vital-bar border border-emerald-500/30">
+                    <div id="statVitalityBar" class="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-300" style="width: 80%"></div>
+                  </div>
+                  <p class="text-[10px] text-slate-400 truncate">抵御天敌与灾变底线</p>
+                </div>
+
+                <div id="vitalCardEnergy" class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5 transition">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-amber-300">⚡ 能量/家境</span>
+                    <div class="flex items-center gap-1">
+                      <span id="statEnergyVal" class="font-mono font-extrabold text-white">75</span>
+                      <span id="statEnergyDelta" class="hidden text-[10px] font-mono font-extrabold px-1 rounded"></span>
+                    </div>
+                  </div>
+                  <div class="h-2.5 rounded-full overflow-hidden crystal-vital-bar border border-amber-500/30">
+                    <div id="statEnergyBar" class="h-full bg-gradient-to-r from-amber-600 to-amber-400 transition-all duration-300" style="width: 75%"></div>
+                  </div>
+                  <p class="text-[10px] text-slate-400 truncate" id="statEnergySubtext">代谢储备充足</p>
+                </div>
+
+                <div id="vitalCardAdapt" class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5 transition">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-cyan-300">🧠 适应/认知</span>
+                    <div class="flex items-center gap-1">
+                      <span id="statAdaptVal" class="font-mono font-extrabold text-white">50</span>
+                      <span id="statAdaptDelta" class="hidden text-[10px] font-mono font-extrabold px-1 rounded"></span>
+                    </div>
+                  </div>
+                  <div class="h-2.5 rounded-full overflow-hidden crystal-vital-bar border border-cyan-500/30">
+                    <div id="statAdaptBar" class="h-full bg-gradient-to-r from-cyan-600 to-cyan-400 transition-all duration-300" style="width: 50%"></div>
+                  </div>
+                  <p class="text-[10px] text-slate-400 truncate">跨纪元基因突变力</p>
+                </div>
+
+                <div id="vitalCardLineage" class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5 transition">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-purple-300">🧬 繁衍/羁绊</span>
+                    <div class="flex items-center gap-1">
+                      <span id="statLineageVal" class="font-mono font-extrabold text-white">60</span>
+                      <span id="statLineageDelta" class="hidden text-[10px] font-mono font-extrabold px-1 rounded"></span>
+                    </div>
+                  </div>
+                  <div class="h-2.5 rounded-full overflow-hidden crystal-vital-bar border border-purple-500/30">
+                    <div id="statLineageBar" class="h-full bg-gradient-to-r from-purple-600 to-purple-400 transition-all duration-300" style="width: 60%"></div>
+                  </div>
+                  <p class="text-[10px] text-slate-400 truncate">决定子嗣与家族传世</p>
+                </div>
+              </div>
+            </div>
+
+            
+        </div>
+        
+        <!-- ==================== v12.0 IMMEDIATE 3D TAROT HAND & EVENT COCKPIT (零滚动同屏出牌区) ==================== -->
+        <div id="storyAfterStageAnchor" class="hidden"></div>
+        <div id="v12CockpitDecisionZone" class="space-y-3">
+          <!-- Butterfly Effect Alert Banner -->
+            <div id="butterflyAlertBanner" class="hidden p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-purple-500/20 to-cyan-500/20 border border-amber-400/50 text-xs text-amber-200 flex items-center gap-3 shadow-lg">
+              <span class="text-2xl shrink-0">🦋</span>
+              <div id="butterflyAlertText" class="leading-relaxed"></div>
+            </div>
+
+            <!-- ACTIVE DECISION WITH GRAPHICAL VECTOR STORYBOARD ILLUSTRATION (具象化戏剧分镜插画 + 巴斯克维尔命运塔罗牌) -->
+            <div id="decisionPromptContainer" class="hidden baskerville-frame rounded-2xl p-5 sm:p-6 border-2 border-amber-400/85 decision-glow space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span id="decisionTypeBadge" class="text-xs px-3 py-1 rounded-full bg-amber-500/25 text-amber-200 border border-amber-400/50 font-bold">
+                    ⚡ 关键演化分岔抉择
+                  </span>
+                  <span id="decisionEpochBadge" class="text-[11px] px-2 py-0.5 rounded bg-slate-900 text-cyan-300 font-mono border border-cyan-500/30"></span>
+                </div>
+                <span id="decisionAgeTag" class="text-xs font-mono font-bold text-amber-300"></span>
+              </div>
+
+              <!-- Smooth High-Precision Vector Storyboard Illustration -->
+              <div id="decisionStoryboardWrap" class="rounded-xl overflow-hidden border border-amber-500/40 bg-slate-950 relative shadow-inner">
+                <svg id="decisionStoryboardSvg" viewBox="0 0 640 135" class="w-full h-20 sm:h-24 block"></svg>
+                <canvas id="decisionPixelCanvas" width="640" height="135" class="hidden"></canvas>
+                <div id="storyboardCaptionOverlay" class="absolute bottom-1.5 right-2.5 px-2.5 py-0.5 rounded bg-slate-950/90 text-[10px] font-mono text-amber-300 border border-amber-500/40">
+                  当前场景
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <h4 id="decisionTitle" class="serif-title text-lg sm:text-xl font-bold text-white"></h4>
+                <p id="decisionDesc" class="text-xs sm:text-sm text-slate-200 leading-relaxed bg-slate-950/75 p-3.5 rounded-xl border border-slate-800/90"></p>
+              </div>
+
+              <!-- Optional Philosophical Reflection Input -->
+              <div id="philosophicalInputWrap" class="hidden space-y-2 pt-1">
+                <label class="block text-xs text-cyan-300 font-medium">⏸️ 暂停片刻：把这具生物的处境与你自己的人生放在一起想一想（选填）：</label>
+                <input type="text" id="philosophicalNoteInput" maxlength="300" placeholder="写下一行此刻的感悟，它将永久镌刻在这段生命的化石档案中……" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-cyan-400" />
+              </div>
+
+              <!-- 3-4 Rich Branching Choice Cards with Explicit Organ Upgrade Previews -->
+              <div id="decisionChoicesList" class="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-2"></div>
+            </div>
+
+            
+        </div>
+
+        <!-- ==================== v13.0 NATIVE RPG SYSTEM MENU BAR & POP-UP DRAWERS (告别长网页瀑布流!) ==================== -->
+        <div id="v13RpgSystemMenuBar" class="glass-card rounded-2xl p-2.5 sm:p-3 border border-amber-500/50 bg-slate-950/95 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" id="btnToggleCultDrawer" class="rpg-drawer-btn px-3.5 py-2 rounded-xl text-xs font-extrabold text-amber-200 flex items-center gap-2 relative">
+              <span>🧬</span>
+              <span>养成工坊</span>
+              <span class="px-1.5 py-0.2 rounded bg-amber-500/30 text-amber-300 font-mono text-[10px]">[快捷键 C]</span>
+              <span id="cultNotifDot" class="notif-dot w-2.5 h-2.5 rounded-full bg-rose-500 border border-white"></span>
+            </button>
+
+            <button type="button" id="btnToggleArchiveDrawer" class="rpg-drawer-btn px-3.5 py-2 rounded-xl text-xs font-bold text-cyan-200 flex items-center gap-2">
+              <span>📜</span>
+              <span>世系族谱与生态图鉴 (20阶段年轮 / 存活曲线 / 编年史)</span>
+              <span class="px-1.5 py-0.2 rounded bg-slate-800 text-cyan-300 font-mono text-[10px]">[快捷键 M]</span>
+            </button>
+
+            <button type="button" id="btnToggleCombatFocusMode" class="rpg-drawer-btn px-3 py-2 rounded-xl text-xs font-bold text-emerald-300 flex items-center gap-1.5" title="暂时收起下方手牌，全屏专注微操走位与首领弹反战">
+              <span>⚔️</span>
+              <span id="combatFocusBtnLabel">收起手牌·专注战斗 [H]</span>
+            </button>
+          </div>
+
+          <div class="text-[11px] font-mono text-slate-400 hidden xl:block">
+            🕹️ 原生座舱模式：一屏掌控舞台、技能与手牌，养成与档案按需呼出
+          </div>
+        </div>
+
+        <!-- Drawer 1: 5-Tab RPG Cultivation Workshop (Hidden until clicked or C pressed, keeping viewport compact!) -->
+        <div id="v13CultivationDrawerWrap" class="hidden transition-all duration-200">
+          <!-- ==================== v10.0 FOUR-PILLAR CULTIVATION & PROGRESSION DOCK (四大深度养成系统) ==================== -->
+        <div class="glass-card rounded-2xl p-4 sm:p-5 border border-cyan-500/40 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button type="button" data-cult-tab="workshop" class="cult-tab-btn px-3 py-1.5 rounded-xl text-xs font-extrabold transition bg-emerald-500/25 text-emerald-200 border border-emerald-400/50">
+                🧬 1. 基因与器官自由加点工坊
+              </button>
+              <button type="button" data-cult-tab="relics" class="cult-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-300 hover:text-white border border-slate-800">
+                🎒 2. 圣物装备与祈愿抽卡 (<span id="cultRelicCountBadge">0</span>/12)
+              </button>
+              <button type="button" data-cult-tab="companions" class="cult-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-300 hover:text-white border border-slate-800">
+                🐾 3. 伴生族群/家人助战编队
+              </button>
+              <button type="button" data-cult-tab="alchemy" class="cult-tab-btn px-3 py-1.5 rounded-xl text-xs font-extrabold transition bg-slate-900 text-amber-300 hover:text-amber-200 border border-amber-500/40">
+                ⚗️ 4. 三色基因炼成炉 (合成神话弹幕技)
+              </button>
+              <button type="button" data-cult-tab="sanctuary" class="cult-tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 text-purple-300 hover:text-purple-200 border border-purple-500/30">
+                🏛️ 4. 先祖永恒天赋树 (局外养成)
+              </button>
+            </div>
+            <div class="flex items-center gap-3 text-xs font-mono">
+              <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-amber-500/40 text-amber-300">🧬 进化点: <strong id="dockDnaPointsVal">2</strong></span>
+              <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-purple-500/40 text-purple-300">💎 永恒琥珀: <strong id="dockAmberVal">120</strong></span>
+            </div>
+          </div>
+
+          <!-- TAB 1: ORGAN & CAPABILITY UPGRADE WORKSHOP -->
+          <div id="cult-panel-workshop" class="space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span class="text-slate-300">💡 消耗在舞台捕食或战斗获得的 <strong class="text-amber-300">🧬进化点</strong>，随时手动突破 6 大部位等级（最高 Lv.5 神话阶，画布躯体实时生长变形！）：</span>
+              <button type="button" id="quickMaxRandomOrganBtn" class="px-3 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/35 text-emerald-300 border border-emerald-500/40 font-bold text-xs transition">
+                ⚡ 一键智能加点 (消耗1🧬)
+              </button>
+            </div>
+            <div id="workshopOrganCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs"></div>
+          </div>
+
+          <!-- TAB 2: RELICS & HEIRLOOMS INVENTORY + GACHA SUMMON -->
+          <div id="cult-panel-relics" class="hidden space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="text-xs text-slate-300">
+                🎒 当前已装备圣物/传家宝（最多同时生效 3 件核心圣物，提供强力被动与命运轮盘加成）：
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" id="gachaSummonRelicDnaBtn" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-400 hover:to-orange-300 text-slate-950 font-extrabold text-xs shadow-lg transition">
+                  🎲 消耗 2🧬 祈愿锻造圣物
+                </button>
+                <button type="button" id="gachaSummonRelicAmberBtn" class="px-3 py-1.5 rounded-xl bg-purple-500/25 hover:bg-purple-500/40 text-purple-200 border border-purple-400/50 font-bold text-xs transition">
+                  💎 消耗 30琥珀 必出SSR/UR圣物
+                </button>
+              </div>
+            </div>
+            <div id="equippedRelicsRow" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs"></div>
+            <div class="text-[11px] font-bold text-slate-400 pt-1">📦 圣物与传家宝收藏库（点击任意已解锁圣物即可切换佩戴）：</div>
+            <div id="relicInventoryGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2 text-[11px] max-h-48 overflow-y-auto pr-1"></div>
+          </div>
+
+          <!-- TAB 3: COMPANION PACK & FAMILY ASSIST SQUAD -->
+          <div id="cult-panel-companions" class="hidden space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span class="text-slate-300">🐾 你的伴侣、子嗣与共生伙伴会在画布上实时跟随你游弋，自动帮你发射激光攻击首领并拾取基因球：</span>
+              <button type="button" id="summonCompanionBtn" class="px-3 py-1.5 rounded-xl bg-pink-500/25 hover:bg-pink-500/40 text-pink-200 border border-pink-400/50 font-bold text-xs transition">
+                🌺 消耗 2🧬 繁衍/招募新助战伙伴 (+1子嗣)
+              </button>
+            </div>
+            <div id="companionSquadGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs"></div>
+          </div>
+
+          <!-- TAB 5: GENE RUNE ALCHEMY FURNACE (三色基因符文合成神话被动武技) -->
+          <div id="cult-panel-alchemy" class="hidden space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span class="text-amber-200">⚗️ <strong>远古三色基因炼成炉</strong>：在舞台吃球或击败首领会掉落 🔴狂暴 / 🔵智慧 / 🟣繁衍 三色基因符文，集齐配方即可炼成<strong>自动攻击首领的神话伴生弹幕技</strong>！</span>
+              <button type="button" id="freeGrantRunesBtn" class="px-3 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/35 text-amber-300 border border-amber-400/50 font-bold text-xs transition">
+                🎁 消耗 1🧬 提炼全色基因符文 (+1🔴 +1🔵 +1🟣)
+              </button>
+            </div>
+            <div id="alchemyRecipesGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs"></div>
+          </div>
+
+          <!-- TAB 4: ANCESTRAL ETERNAL SANCTUARY (META-PROGRESSION) -->
+          <div id="cult-panel-sanctuary" class="hidden space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span class="text-purple-200">🏛️ <strong>先祖基因圣殿（Roguelite 跨周目永久养成）</strong>：每次升级永久生效，所有新开局与下一世均自动享受加成！</span>
+              <span class="text-[11px] text-slate-400">完成阶段抉择、击败首领或达成结局均可获得 💎永恒琥珀</span>
+            </div>
+            <div id="sanctuaryTalentsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs"></div>
+          </div>
+        </div>
+        
+
+        
+        </div>
+
+        <!-- Drawer 2: Secondary Lineage, Traits, Chronicle & Survivorship Archive (Hidden until clicked or M pressed) -->
+        <div id="v13ArchiveDrawerWrap" class="hidden space-y-4 transition-all duration-200">
+          <!-- Live Family / Ecology Bonds Strip -->
+        <div id="liveBondsStrip" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs"></div>
+
+        <!-- Main In-Game Grid: Left (Gamified Vital Crystal HUD + Decision Cockpit + Traits + Chronicle) / Right (Dynasty Tree + Branching Path + Life Map + Survivorship) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+          <!-- Left Column (7 cols) -->
+          <div class="lg:col-span-7 space-y-4">
+
+            <!-- Vital Gauges Moved to Top Native HUD -->
+<!-- Decision Block Moved to Top Cockpit -->
+<!-- Active Genetic Traits, Mutations & Scars Panel -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                <div>
+                  <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                    <span>🧬 已觉醒的基因性状、祖传烙印与器官词条</span>
+                  </h3>
+                  <p class="text-[11px] text-slate-400">标注 [祖传] 的词条来自上一世父母血脉，本世新觉醒词条亦可传给下一代</p>
+                </div>
+                <span id="traitCountBadge" class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-mono">0 个性状</span>
+              </div>
+              <div id="activeTraitsContainer" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <!-- Life Chronicle Log -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                <div>
+                  <h3 class="text-sm font-bold text-white">📜 生命演化编年史</h3>
+                  <p class="text-[11px] text-slate-400">实时记录每一次分支选择与器官进化 · 点击任意一行点亮 ★ 珍藏</p>
+                </div>
+                <span id="starredCountBadge" class="text-xs px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 font-mono">★ 0</span>
+              </div>
+              <div id="lifeChronicleList" class="space-y-2 max-h-80 overflow-y-auto pr-1"></div>
+            </div>
+          </div>
+
+          <!-- Right Column (5 cols): Multi-Gen Dynasty Banner, Branching Path Tree, 20-Cell Life Map, Survivorship Curve, Cohort -->
+          <div class="lg:col-span-5 space-y-5">
+
+            <!-- Multi-Generational Lineage Dynasty Status Card -->
+            <div class="glass-card rounded-2xl p-5 space-y-3 border border-amber-500/40 bg-gradient-to-br from-slate-900/95 to-amber-950/20">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-sm font-bold text-amber-300 flex items-center gap-1.5">
+                    <span>👑 家族血脉延续纪年（第 1 世 ➔ 第 N 世）</span>
+                  </h3>
+                  <p class="text-[11px] text-slate-400">若本世无子嗣而亡，血脉将彻底断绝！</p>
+                </div>
+                <span id="dynastyGenStatusBadge" class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-200 border border-amber-400/40">
+                  当前：第 1 世
+                </span>
+              </div>
+              <div id="dynastyLineageSummaryBox" class="grid grid-cols-3 gap-2 text-center text-xs"></div>
+              <div id="dynastyAncestorsChain" class="space-y-1.5 max-h-32 overflow-y-auto pr-1 text-[11px]"></div>
+            </div>
+
+            <!-- Visual Branching Life Trajectory Tree -->
+            <div class="glass-card rounded-2xl p-5 space-y-3.5 border border-emerald-500/30">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-sm font-bold text-white">🌿 演化分岔路与流派倾向图</h3>
+                  <p class="text-[11px] text-slate-400">你的每一次选择正在将你塑造成截然不同的生物形态</p>
+                </div>
+                <span id="dominantPathBadge" class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold">流派均衡</span>
+              </div>
+
+              <div class="space-y-2 text-xs">
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-rose-300 font-semibold">⚔️ 掠食霸主 / 孤高暴君路线</span>
+                    <span id="pathBarTyrantLabel" class="font-mono text-rose-300">0 点</span>
+                  </div>
+                  <div class="h-2 bg-slate-950 rounded-full overflow-hidden">
+                    <div id="pathBarTyrant" class="h-full bg-gradient-to-r from-rose-600 to-orange-400 transition-all duration-300" style="width: 8%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-purple-300 font-semibold">🧬 群落领袖 / 万代始祖路线</span>
+                    <span id="pathBarDynastyLabel" class="font-mono text-purple-300">0 点</span>
+                  </div>
+                  <div class="h-2 bg-slate-950 rounded-full overflow-hidden">
+                    <div id="pathBarDynasty" class="h-full bg-gradient-to-r from-purple-600 to-pink-400 transition-all duration-300" style="width: 8%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-cyan-300 font-semibold">🌌 异端突变 / 跨界先驱路线</span>
+                    <span id="pathBarPioneerLabel" class="font-mono text-cyan-300">0 点</span>
+                  </div>
+                  <div class="h-2 bg-slate-950 rounded-full overflow-hidden">
+                    <div id="pathBarPioneer" class="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 transition-all duration-300" style="width: 8%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="branchingCrossroadsChain" class="pt-2 border-t border-slate-800/80 space-y-1.5 max-h-44 overflow-y-auto pr-1 text-[11px]"></div>
+            </div>
+
+            <!-- 20-Stage Life Grid Map -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-sm font-bold text-white">🗺️ 20阶段生命年轮地图</h3>
+                  <p class="text-[11px] text-slate-400">悬停查看你在每个生命阶段的抉择印记</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 text-[10px] text-slate-400">
+                  <span class="inline-flex items-center gap-1"><i class="w-2 h-2 rounded-sm bg-rose-500 inline-block"></i>霸权</span>
+                  <span class="inline-flex items-center gap-1"><i class="w-2 h-2 rounded-sm bg-purple-500 inline-block"></i>繁衍</span>
+                  <span class="inline-flex items-center gap-1"><i class="w-2 h-2 rounded-sm bg-cyan-400 inline-block"></i>突变</span>
+                  <span class="inline-flex items-center gap-1"><i class="w-2 h-2 rounded-sm bg-amber-400 inline-block"></i>哲思</span>
+                </div>
+              </div>
+              <div id="lifeGridMap" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5 pt-1"></div>
+            </div>
+
+            <!-- Ecological Survivorship Curve -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-sm font-bold text-white">📉 物种存活曲线 (Survivorship Curve)</h3>
+                  <p class="text-[11px] text-slate-400" id="svCurveSubtitle">同批降生的同类个体中仍存活的比例</p>
+                </div>
+                <span id="currentCohortSurvivalBadge" class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                  存活率 100%
+                </span>
+              </div>
+              <div class="bg-slate-950/90 rounded-xl p-3 border border-slate-800/80">
+                <svg id="survivorshipSvg" viewBox="0 0 360 140" class="w-full h-32 overflow-visible"></svg>
+              </div>
+              <p id="svCurveExplainText" class="text-[11px] text-slate-400 leading-relaxed"></p>
+            </div>
+
+            <!-- Born in the Same Second (4 Parallel Organisms) -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+              <div>
+                <h3 class="text-sm font-bold text-white">⏱️ 在同一瞬间降生的生命 (平行对照)</h3>
+                <p class="text-[11px] text-slate-400">与你同一秒诞生于地球的另外 4 个生命，走了不同的本能路线</p>
+              </div>
+              <div id="sameSecondCohortList" class="space-y-2"></div>
+            </div>
+
+            <!-- Side-by-Side Reference Comparison -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+              <h3 class="text-sm font-bold text-white">⚖️ 跨物种尺度并排对比</h3>
+              <div id="sideBySideCompareBox" class="grid grid-cols-2 gap-3 text-xs"></div>
+            </div>
+
+          </div>
+        </div>
+      
+        </div>
+
+      </div>
+
+      <!-- SUBVIEW 1D: END OF LIFE / MULTI-GENERATION CONTINUATION OR LINEAGE EXTINCTION REPORT -->
+      <div id="subview-ending" class="hidden max-w-5xl mx-auto space-y-6">
+        <div class="glass-card rounded-2xl p-6 sm:p-8 border-2 border-amber-500/50 shadow-2xl space-y-6">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b border-slate-800 pb-5">
+            <div class="flex items-center gap-4">
+              <div id="endSpeciesEmoji" class="text-5xl sm:text-6xl p-4 rounded-2xl bg-slate-900 border border-amber-500/40 shadow-lg"></div>
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <span id="endGenBadge" class="text-xs px-3 py-1 rounded-full bg-purple-500/25 text-purple-200 border border-purple-400/50 font-bold"></span>
+                  <span id="endBadgeStatus" class="text-xs px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold"></span>
+                  <span id="endArchetypePill" class="text-xs px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold"></span>
+                </div>
+                <h2 id="endTitleText" data-user-text class="serif-title text-2xl sm:text-3xl font-bold text-white mt-2"></h2>
+                <p id="endSubtitleText" class="text-xs sm:text-sm text-slate-400 mt-0.5"></p>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button id="replaySameSpeciesBtn" class="px-4 py-2.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold text-xs sm:text-sm border border-cyan-500/40 transition">
+                🔀 重开第1世 · 体验全新随机事件线
+              </button>
+              <button id="openPosterFromEndBtn" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-orange-400 hover:from-amber-400 hover:to-orange-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow-xl shadow-amber-500/25 transition flex items-center gap-1.5">
+                <span>🖼️</span><span>生命海报与血脉码</span>
+              </button>
+              <button id="copyShareCardBtn" class="px-3.5 py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-bold text-xs sm:text-sm transition">
+                📋 复制文字战报
+              </button>
+              <button id="playAgainFromEndBtn" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs sm:text-sm border border-slate-700 transition">
+                🎲 换物种重投
+              </button>
+            </div>
+          </div>
+
+          <!-- ==================== NEW: GENERATIONAL LINEAGE CONTINUATION OR EXTINCTION PANEL ==================== -->
+          <div id="endDynastyContinuationCard" class="p-6 rounded-2xl border-2 space-y-4"></div>
+
+          <!-- Summary Metrics Grid -->
+          <div id="endMetricsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3.5"></div>
+
+          <!-- ==================== v7.0 COMPREHENSIVE END-OF-LIFE SETTLEMENT DOSSIER TABLES (人生终局完整结算大表) ==================== -->
+          <div id="endFullLifeDossierSection" class="space-y-5"></div>
+
+          <!-- Ending Archetype Banner & Story -->
+          <div id="endArchetypeDetailCard" class="p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900/95 to-emerald-950/30 border border-emerald-500/40 space-y-2.5"></div>
+
+          <!-- Parallel Universe "What-If" Counterfactual Analysis -->
+          <div class="p-5 rounded-2xl bg-slate-900/90 border border-cyan-500/30 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-cyan-300 flex items-center gap-2">
+                <span>🦋 平行宇宙复盘：如果当初你在分岔路口做了不同选择……</span>
+              </h3>
+              <span class="text-[11px] text-slate-400">基于本世真实抉择节点推演</span>
+            </div>
+            <div id="endWhatIfList" class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs"></div>
+          </div>
+
+          <!-- Fossilization Roll Result -->
+          <div id="fossilResultCard" class="p-5 rounded-2xl border space-y-2"></div>
+
+          <!-- Traits Acquired & Starred Moments -->
+          <div class="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-3">
+            <h3 class="text-sm font-bold text-white">性状与珍藏瞬间</h3>
+            <p id="endCauseOfDeathText" class="text-xs sm:text-sm text-slate-200 leading-relaxed"></p>
+            <div id="endTraitsSummaryBox" class="pt-1 flex flex-wrap gap-2"></div>
+            <div id="endStarredMomentsBox" class="pt-2 space-y-1.5"></div>
+          </div>
+
+          <!-- Leave Final Words to Enshrine in Fossil Memorial Hall -->
+          <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
+            <h3 class="text-sm font-bold text-amber-300">🕯️ 对这段走完的生命说一句话（安放至《地质追思馆》）</h3>
+            <div class="flex flex-col sm:flex-row gap-2.5">
+              <input type="text" id="endEpitaphInput" maxlength="300" placeholder="例如：我把演化出的原始肺泡传给了第二世的孩子们，愿你们替我踏上真正的陆地……" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-400" />
+              <button id="enshrineToMemorialBtn" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition shrink-0">
+                🕯️ 安放至地质追思馆
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== VIEW 2: 24 SPECIES & ERA PROBABILITY ATLAS ==================== -->
+    <section id="view-atlas" class="hidden space-y-5">
+      <div class="glass-card rounded-2xl p-5 sm:p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+          <div>
+            <h2 class="serif-title text-xl sm:text-2xl font-bold text-white">🦕 地球 46 亿年生物演化与分支图鉴</h2>
+            <p class="text-xs text-slate-400 mt-1">每个物种均配有定制骨骼形态、专属奇遇池与跨世代进化树。点击任意物种可直接作为【第 1 世】降生。</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <select id="atlasEraFilter" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+              <option value="all">全部纪元与人类文明 (30)</option>
+              <option value="humanity">🧑 人类与灵长文明纪元 (6)</option>
+              <option value="precambrian">🌋 太古宙与元古宙 (3)</option>
+              <option value="paleozoic">🦐 古生代 (8)</option>
+              <option value="mesozoic">🦖 中生代 (6)</option>
+              <option value="cenozoic">🦣 新生代与现代生物 (7)</option>
+            </select>
+            <input type="text" id="atlasSearchInput" placeholder="搜索物种/年代/习性..." class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" />
+          </div>
+        </div>
+        <div id="atlasCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: 12 LIFE ENDINGS & EVOLUTIONARY PATHS GALLERY ==================== -->
+    <section id="view-endings" class="hidden space-y-5">
+      <div class="glass-card rounded-2xl p-5 sm:p-6 space-y-5">
+        <div class="border-b border-slate-800 pb-4 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="serif-title text-xl sm:text-2xl font-bold text-white">🏆 12 大传奇人生结局与演化流派图鉴</h2>
+            <p class="text-xs text-slate-400 mt-1">你的每一次选择与世代传承，都将通向 12 种截然不同的生命哲学终局。</p>
+          </div>
+          <span id="unlockedEndingsCountBadge" class="text-xs font-mono font-bold px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40">
+            已解锁结局：0 / 12
+          </span>
+        </div>
+        <div id="endingsGalleryGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 4: FOSSIL MEMORIAL HALL ==================== -->
+    <section id="view-memorial" class="hidden space-y-5">
+      <div class="glass-card rounded-2xl p-5 sm:p-6 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+          <div>
+            <h2 class="serif-title text-xl sm:text-2xl font-bold text-white">🕯️ 地质追思馆 (Fossil Hall of Memories)</h2>
+            <p class="text-xs text-slate-400 mt-1">这里安放着跨越 46 亿年走到最后的生命与世系印记。你可以为任意远古生命点亮琥珀微光。</p>
+          </div>
+          <button id="randomMeetMemorialBtn" class="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-semibold transition">
+            ✨ 随机遇见一段远古生命
+          </button>
+        </div>
+        <div id="memorialHallGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 5: PUBLIC DEPLOYMENT, READINESS AUDIT & GLOBAL MARKETING HUB ==================== -->
+    <!-- ==================== VIRAL SHARE POSTER & PERSON-TO-PERSON REFERRAL MODAL ==================== -->
+    <div id="viralPosterModal" role="dialog" aria-modal="true" aria-labelledby="posterDialogTitle" tabindex="-1" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+      <div class="baskerville-frame rounded-2xl max-w-4xl w-full p-5 sm:p-7 border-2 border-amber-500/60 shadow-2xl space-y-5 my-auto">
+        <div class="flex items-center justify-between border-b border-amber-500/30 pb-3.5">
+          <div>
+            <h3 id="posterDialogTitle" class="serif-title text-lg sm:text-2xl font-bold text-white mt-1">生命海报与血脉接力</h3>
+          </div>
+          <button type="button" id="closeViralPosterModalBtn" aria-label="关闭 / Close" class="shrink-0 text-slate-400 hover:text-white text-base px-3 py-1 rounded-lg bg-slate-900 border border-slate-700">✕ 关闭</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+          <!-- Left 6 Cols: High-Res Canvas Poster Preview -->
+          <div class="md:col-span-6 flex flex-col items-center space-y-3">
+            <div class="rounded-2xl overflow-hidden border-2 border-amber-400/70 shadow-2xl bg-slate-950">
+              <canvas id="sharePosterCanvas" width="540" height="760" class="w-full max-w-[330px] h-auto block"></canvas>
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-2.5 w-full">
+              <button type="button" id="downloadPosterPngBtn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg transition flex items-center gap-1.5">
+                <span>📥</span><span>下载生命海报 (PNG)</span>
+              </button>
+              <button type="button" id="regeneratePosterStyleBtn" class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-200 font-semibold text-xs border border-amber-500/40 transition">
+                🎨 切换海报主题色
+              </button>
+            </div>
+          </div>
+
+          <!-- Right 6 Cols: Person-to-Person Referral & Unlock Rewards -->
+          <div class="md:col-span-6 space-y-4 text-xs">
+            <div class="p-4 rounded-2xl bg-slate-900/95 border border-amber-500/40 space-y-2.5">
+              <div class="font-bold text-amber-300 text-sm flex items-center justify-between">
+                <span>你的接力码</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <input type="text" id="myGeneratedBloodlineCode" readonly aria-label="血脉接力码 / Lineage code" class="min-w-0 flex-1 bg-slate-950 border border-amber-400/60 rounded-xl px-3.5 py-2.5 text-sm font-mono font-bold text-amber-300 text-center tracking-wider" />
+                <button type="button" id="copyViralInviteBtn" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shrink-0 transition">
+                  复制血脉码
+                </button>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed">
+                完成一生并留下后代后，海报会附上血脉码。好友可继承部分器官，开启下一世。
+              </p>
+            </div>
+
+            <!-- Apply Friend Code right inside modal too -->
+            <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2">
+              <div class="font-bold text-cyan-300">使用好友接力码</div>
+              <div class="flex flex-col gap-2 sm:flex-row">
+                <input type="text" id="modalFriendCodeInput" maxlength="64" placeholder="输入接力码" aria-label="血脉接力码 / Lineage code" class="min-w-0 flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-white" />
+                <button type="button" id="modalApplyFriendCodeBtn" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-xs transition">
+                  开始下一世 →
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  
+    <!-- ==================== v10.0 ANIMATED D20 DESTINY ROULETTE & COMBAT CHECK OVERLAY ==================== -->
+    <div id="destinyRouletteModal" role="dialog" aria-modal="true" aria-labelledby="rouletteChoiceTitle" tabindex="-1" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+      <div class="baskerville-frame rounded-2xl max-w-md w-full p-6 border-2 border-amber-400 shadow-2xl text-center space-y-4">
+        <div class="flex items-center justify-between border-b border-amber-500/30 pb-2.5">
+          <span class="text-xs font-mono font-bold text-amber-300">🎲 巴斯克维尔命运轮盘检定</span>
+          <button type="button" id="skipRouletteAnimBtn" aria-label="跳过动画 / Skip animation" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300">⚡ 跳过演出</button>
+        </div>
+        <div id="rouletteChoiceTitle" class="text-sm font-bold text-white truncate"></div>
+        <div class="relative w-28 h-28 mx-auto rounded-full bg-gradient-to-br from-amber-500/30 via-slate-900 to-purple-600/30 border-4 border-amber-400 flex flex-col items-center justify-center shadow-2xl" id="rouletteWheelCircle">
+          <span class="text-[10px] font-mono text-amber-200">DESTINY D20</span>
+          <span id="rouletteDiceNumber" class="text-4xl font-extrabold font-mono text-white">20</span>
+          <span id="rouletteTierLabel" class="text-[10px] font-bold text-emerald-300 mt-0.5">🌟 神话大成功!</span>
+        </div>
+        <div id="rouletteFormulaBreakdown" class="text-xs font-mono text-cyan-300 bg-slate-950/90 p-2.5 rounded-xl border border-slate-800">
+          基础掷骰 14 + 器官加成 +4 + 圣物加成 +2 = 20
+        </div>
+        <div id="rouletteOutcomePreview" class="text-xs text-slate-200 leading-relaxed"></div>
+      </div>
+    </div>
+
+  
+    <!-- ==================== v12.0 BOSS DEFEAT JACKPOT LOOT CHEST MODAL (首领击破战利品三选一盲盒) ==================== -->
+    <div id="bossLootModal" role="dialog" aria-modal="true" aria-labelledby="bossLootHeaderTitle" tabindex="-1" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+      <div class="baskerville-frame rounded-2xl max-w-2xl w-full p-6 border-2 border-amber-400 shadow-2xl space-y-4 text-center">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/25 border border-amber-400/60 text-amber-200 text-xs font-extrabold">
+          <span>🏆 纪元首领击破大奖 · 战利品三选一</span>
+        </div>
+        <h3 id="bossLootHeaderTitle" class="serif-title text-2xl font-extrabold text-white">你成功击败了纪元首领！请选择一项战利品赐福：</h3>
+        <button id="closeBossLootBtn" type="button" class="px-3 py-2 text-sm text-slate-300">稍后领取</button>
+        <div id="bossLootOptionsGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left pt-2"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==================== MODAL OVERLAY ==================== -->
+  <div id="customModalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalHeaderTitle" tabindex="-1" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-lg w-full p-6 border border-slate-700 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 id="modalHeaderTitle" class="serif-title text-lg font-bold text-white"></h3>
+        <button id="closeModalBtn" class="text-slate-400 hover:text-white text-sm px-2 py-1">✕</button>
+      </div>
+      <div id="modalBodyContent" class="text-xs sm:text-sm text-slate-300 space-y-3"></div>
+      <div id="modalFooterActions" class="flex justify-end gap-2 pt-2"></div>
+    </div>
+  </div>
+
+  <!-- Toast Banner -->
+  <div id="toastNotification" role="status" class="fixed bottom-5 right-5 z-50 hidden px-4 py-3 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs sm:text-sm shadow-2xl transition-all"></div>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-900 bg-abyss-950 py-4 px-4 text-center text-[11px] text-slate-500 mt-8">
+    <span>46亿分之一 · 1 in 4.6 Billion · 14.1.0-rc.2</span>
+  </footer>
+
+
+
+  <script src="session.js"></script>
+  <script src="english.js"></script>
+  <script src="english-story.js"></script>
+  <script src="localization.js"></script>
+  <script src="ecology.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
